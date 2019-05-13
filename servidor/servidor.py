@@ -3,7 +3,6 @@ import sys
 import json
 import numpy
 import itertools
-import time
 import random
 from collections import namedtuple
 

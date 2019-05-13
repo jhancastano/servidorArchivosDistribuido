@@ -11,16 +11,23 @@ import os
 
 
 def hashearArchivo(FILE):
-	diccionarioArchivo = {}
+	SizeFile = os.stat(FILE).st_size
+	SizePart = 1024*10
+	diccionario = {}
+	DicPart = {}
+	FileComplete = hashlib.sha1()
 	with open(FILE, 'rb') as f:
 		i= 1
-		for x in f:
-			data = f.read(10)
+		for x in range(int(SizeFile/SizePart)+1):			
+			data = f.read(SizePart)
 			objetohash = hashlib.sha1(data)
 			cadena = objetohash.hexdigest()
-			diccionarioArchivo.update({i:cadena})
+			DicPart.update({i:cadena})
+			FileComplete.update(data)
 			i=i+1
-	return diccionarioArchivo
+	shaprincipal =	FileComplete.hexdigest()	
+	diccionario.update({shaprincipal:DicPart})
+	return diccionario
 
 def hashf(FILE):
 	with open(FILE, 'rb') as f:
@@ -33,19 +40,17 @@ def hashf(FILE):
 
 def comprobarHash(diccionarioArchivo):
 	h = hashlib.sha1()
+
 	for k,v in diccionarioArchivo.items():
+		print(k)
 		print(v)
-		h.update(v.encode('utf8'))
 	print('-------------------------')
 	return h.hexdigest()
 
 def main():
 	dicc = {}
 	dicc.update(hashearArchivo('pruebaupload.png'))
-	print('-------------------------')
 	print(comprobarHash(dicc))
-	print('-------------------------')
-	hashf('pruebaupload.png')
 
 if __name__ == '__main__':
 	main()
