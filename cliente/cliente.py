@@ -4,8 +4,6 @@ import json
 import numpy
 import itertools
 import random
-
-
 import hashlib
 import os
 
@@ -36,8 +34,6 @@ def hashf(FILE):
 		cadena = objetohash.hexdigest()	
 	print(cadena)
 
-
-
 def comprobarHash(diccionarioArchivo):
 	h = hashlib.sha1()
 
@@ -48,9 +44,35 @@ def comprobarHash(diccionarioArchivo):
 	return h.hexdigest()
 
 def main():
+	print(2^4)
 	dicc = {}
-	dicc.update(hashearArchivo('pruebaupload.png'))
-	print(comprobarHash(dicc))
+	identity = b'1'
+	servidortcp = "tcp://localhost:4444"
+	context = zmq.Context()
+	socket = context.socket(zmq.DEALER)
+	socket.identity = identity
+	socket.connect(servidortcp)
+	print("Started client with id {}".format(identity))
+	poller = zmq.Poller()
+	poller.register(sys.stdin, zmq.POLLIN)
+	poller.register(socket, zmq.POLLIN)
+	while True:
+		socks = dict(poller.poll())
+		mensaje = {'operacion':'sin operacion'}
+		mensaje_json = json.dumps(mensaje)
+		if socket in socks:
+			sender, msg = socket.recv_multipart()
+			mensaje_json = json.loads(msg)
+			operacion = mensaje_json['operacion']
+			print(msg)
+		elif sys.stdin.fileno() in socks:
+			print("?")
+			command = input()
+			op, msg = command.split(' ', 1)
+			mensaje = {'operacion':'upload','arreglo':{}}
+			mensaje_json = json.dumps(mensaje)
+			socket.send_multipart([identity,mensaje_json.encode('utf8')])
+
 
 if __name__ == '__main__':
 	main()
