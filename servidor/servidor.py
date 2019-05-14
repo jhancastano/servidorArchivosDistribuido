@@ -22,9 +22,10 @@ def main():
     poller.register(sys.stdin, zmq.POLLIN)
     poller.register(socket, zmq.POLLIN)
     #registrando worker------------ 
-    rWorker = {'operacion':'registrar'}
-    rWorker_json = json.dumps(rWorker)
-    socket.send_multipart([identity,rWorker_json.encode('utf8')])
+    regServidor = {'operacion':'r'}
+    msg = json.dumps(regServidor)
+    print(msg)
+    socket.send_multipart([identity,msg.encode('utf8')])
     #--------------------------------
 
 

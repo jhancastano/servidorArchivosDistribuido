@@ -1,5 +1,4 @@
 import zmq
-import zmq
 import sys
 import json
 
@@ -7,14 +6,21 @@ import json
 
 def serverList(identidad,lista):
 	ident =identidad.decode('utf8')
+	print(ident)
 	if ident in lista:
 		print('registrado')
 	else:
 		lista.append(ident)
+		print('registrando: '+ident)
+
+def uploadCliente(diccionario):
+	dicc = {}
+	for k,v in diccionarioArchivo.items():
+	return dicc
 
 def main():
 	serverList1 = []
-
+	diccArchivos = {}
 	if len(sys.argv) != 1:
 		print("Must be called with no arguments")
 		exit()
@@ -29,9 +35,13 @@ def main():
 		sender, destino , msg = socket.recv_multipart()
 		mensaje_json = json.loads(msg)
 		operacion = mensaje_json['operacion']
-		if operacion=='registrar':
-			serverList(sender,serverList1)
-			print(serverList1)
+		print(operacion)
+		if (operacion=='r'):
+			serverList(destino,serverList1)
+		elif (operacion =='upload'):
+			pass
+		elif(operacion=='download'):
+			pass			
 		else:
 			socket.send_multipart([destino, sender, msg])
 

@@ -6,7 +6,11 @@ import itertools
 import random
 import hashlib
 import os
+def upload(json):
+	pass
 
+def download(json):
+	pass
 
 def hashearArchivo(FILE):
 	SizeFile = os.stat(FILE).st_size
@@ -64,6 +68,12 @@ def main():
 			sender, msg = socket.recv_multipart()
 			mensaje_json = json.loads(msg)
 			operacion = mensaje_json['operacion']
+			if(operacion=='upload'):
+				upload(json['arreglo'])
+			elif(operacion=='download'):
+				download(json['arreglo'])
+
+
 			print(msg)
 		elif sys.stdin.fileno() in socks:
 			print("?")
