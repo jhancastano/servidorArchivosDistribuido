@@ -6,7 +6,7 @@ import itertools
 import random
 import hashlib
 import os
-def upload(json):
+def upload(json,identity ):
 	pass
 
 def download(json):
@@ -24,7 +24,7 @@ def hashearArchivo(FILE):
 			data = f.read(SizePart)
 			objetohash = hashlib.sha1(data)
 			cadena = objetohash.hexdigest()
-			DicPart.update({i:cadena})
+			DicPart.update({i:{'namePart':cadena}})
 			FileComplete.update(data)
 			i=i+1
 	shaprincipal =	FileComplete.hexdigest()	
@@ -69,9 +69,10 @@ def main():
 			mensaje_json = json.loads(msg)
 			operacion = mensaje_json['operacion']
 			if(operacion=='upload'):
-				upload(json['arreglo'])
+				print(mensaje_json['lista'])
+				#upload(mensaje_json['lista'],identity)
 			elif(operacion=='download'):
-				download(json['arreglo'])
+				download(mensaje_json['arreglo'],identity)
 
 
 			print(msg)
@@ -79,7 +80,8 @@ def main():
 			print("?")
 			command = input()
 			op, msg = command.split(' ', 1)
-			mensaje = {'operacion':'upload','arreglo':{}}
+
+			mensaje = {'operacion':'upload','lista':hashearArchivo('pruebaupload.png')}
 			mensaje_json = json.dumps(mensaje)
 			socket.send_multipart([identity,mensaje_json.encode('utf8')])
 

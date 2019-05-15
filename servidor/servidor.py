@@ -13,6 +13,7 @@ def main():
     number  = random.randrange(0,9999)
     nombrework = 'servidor'+ str(number)
     identity = nombrework.encode('utf8')
+
     context = zmq.Context()
     socket = context.socket(zmq.DEALER)
     socket.identity = identity
@@ -27,6 +28,23 @@ def main():
     print(msg)
     socket.send_multipart([identity,msg.encode('utf8')])
     #--------------------------------
+    contextS = zmq.Context()
+    socketS = context.socket(zmq.ROUTER)
+    socketS.bind("tcp://*:4441")
+
+    print("Started server Archivos")
+
+    while True:
+        sender, destino , msg = socketS.recv_multipart()
+        mensaje_json = json.loads(msg)
+        operacion = mensaje_json['operacion']
+        print(operacion)
+        if (operacion=='upload'):
+            pass
+        elif(operacion=='download'):
+            pass            
+        else:
+            socketS.send_multipart([destino, sender, msg])
 
 
 
