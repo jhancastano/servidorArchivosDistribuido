@@ -25,7 +25,6 @@ def uploadCliente(diccionario,lista):
 		#print(diccionario['lista'][name][k])
 		pass
 	dicc.update(diccionario)
-	print(dicc)
 	#print(diccionario)
 	return dicc
 

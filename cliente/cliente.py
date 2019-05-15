@@ -48,7 +48,6 @@ def comprobarHash(diccionarioArchivo):
 	return h.hexdigest()
 
 def main():
-	print(2^4)
 	dicc = {}
 	identity = b'1'
 	servidortcp = "tcp://localhost:4444"
