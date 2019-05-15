@@ -5,13 +5,24 @@ import numpy
 import itertools
 import random
 from collections import namedtuple
+import socket as sck
+
+def get_Host_name_IP(): 
+    try: 
+        host_name = sck.gethostname() 
+        host_ip = sck.gethostbyname(host_name) 
+         
+        return host_ip 
+    except: 
+        print("Unable to get Hostname and IP") 
+
 
 
 
 def main():
     servidortcp = "tcp://localhost:4444"
     number  = random.randrange(0,9999)
-    nombrework = 'servidor'+ str(number)
+    nombrework = 'tcp://'+get_Host_name_IP() + ':'+str(number)
     identity = nombrework.encode('utf8')
 
     context = zmq.Context()
@@ -28,6 +39,7 @@ def main():
     print(msg)
     socket.send_multipart([identity,msg.encode('utf8')])
     #--------------------------------
+    
     contextS = zmq.Context()
     socketS = context.socket(zmq.ROUTER)
     socketS.bind("tcp://*:4441")
