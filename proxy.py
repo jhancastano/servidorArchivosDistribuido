@@ -57,7 +57,9 @@ def main():
 		elif (operacion =='upload'):
 			mensaje_json = uploadCliente(mensaje_json,serverList1)
 			msg=json.dumps(mensaje_json)
+			diccArchivos.update(mensaje_json)
 			socket.send_multipart([destino, sender, msg.encode('utf8')])
+			print(diccArchivos)
 		elif(operacion=='download'):
 			pass			
 		else:

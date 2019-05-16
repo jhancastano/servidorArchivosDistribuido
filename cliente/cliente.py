@@ -17,9 +17,13 @@ def upload(msg,identity ):
 		socket.identity = identity
 		socket.connect(msg[name][x]['servidor'])
 		op = 'upload'
-		mensaje = {'operacion':op,'mensaje':'hola_server'}
+		with open(msg[name][x]['namePart'], 'rb') as archivo:
+			data = archivo.read()
+			
+		mensaje = {'operacion':op,'name':msg[name][x]['namePart'],'data':str(data)}
 		mensaje_json = json.dumps(mensaje)
 		socket.send_multipart([identity,mensaje_json.encode('utf8')])
+		os.remove(msg[name][x]['namePart'])
 	
 
 def download(msg):
@@ -39,6 +43,8 @@ def hashearArchivo(FILE):
 			cadena = objetohash.hexdigest()
 			DicPart.update({i:{'namePart':cadena}})
 			FileComplete.update(data)
+			with open(cadena, 'wb') as part:
+				part.write(data)
 			i=i+1
 	shaprincipal =	FileComplete.hexdigest()	
 	diccionario.update({shaprincipal:DicPart})
@@ -84,15 +90,20 @@ def main():
 				#print(mensaje_json['lista'])
 				upload(mensaje_json['lista'],identity)
 			elif(operacion=='download'):
-				download(mensaje_json['arreglo'],identity)
+				download(mensaje_json['lista'],identity)
 
 		elif sys.stdin.fileno() in socks:
-			print("?")
+			print("opciones[u:upload,d:download Narchivo]")
 			command = input()
 			op, msg = command.split(' ', 1)
-
-			mensaje = {'operacion':'upload','lista':hashearArchivo('pruebaupload.png')}
-			mensaje_json = json.dumps(mensaje)
+			if(op=='u'):
+				mensaje = {'operacion':'upload','lista':hashearArchivo('pruebaupload.png')}
+				mensaje_json = json.dumps(mensaje)
+			elif(op=='d'):
+				mensaje = {'operacion':'download','name':'hola'}
+				mensaje_json = json.dumps(mensaje)
+			else:
+				pass
 			socket.send_multipart([identity,mensaje_json.encode('utf8')])
 
 

@@ -16,8 +16,13 @@ def get_Host_name_IP():
     except: 
         print("Unable to get Hostname and IP") 
 
+def upload(msg):
+    print(msg['name'])
+    with open(msg['name'], 'wb') as f:
+        f.write(msg['data'].encode('utf8'))
 
-
+def download(msg):
+    pass
 
 def main():
     servidortcp = "tcp://localhost:4444"
@@ -52,7 +57,7 @@ def main():
         operacion = mensaje_json['operacion']
         print(operacion)
         if (operacion=='upload'):
-            print(mensaje_json)
+            upload(mensaje_json)
             pass
         elif(operacion=='download'):
             pass            
