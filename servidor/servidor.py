@@ -42,7 +42,7 @@ def main():
     
     contextS = zmq.Context()
     socketS = context.socket(zmq.ROUTER)
-    socketS.bind("tcp://*:4441")
+    socketS.bind("tcp://*:"+str(number))
 
     print("Started server Archivos")
 
@@ -52,6 +52,7 @@ def main():
         operacion = mensaje_json['operacion']
         print(operacion)
         if (operacion=='upload'):
+            print(mensaje_json)
             pass
         elif(operacion=='download'):
             pass            

@@ -6,10 +6,23 @@ import itertools
 import random
 import hashlib
 import os
-def upload(json,identity ):
-	pass
+def upload(msg,identity ):
+	name = msg.keys()
+	for keys in name:
+		name= keys
+	for x in msg[name]:
+		print(msg[name][x]['servidor'])		
+		context = zmq.Context()
+		socket = context.socket(zmq.DEALER)
+		socket.identity = identity
+		socket.connect(msg[name][x]['servidor'])
+		op = 'upload'
+		mensaje = {'operacion':op,'mensaje':'hola_server'}
+		mensaje_json = json.dumps(mensaje)
+		socket.send_multipart([identity,mensaje_json.encode('utf8')])
+	
 
-def download(json):
+def download(msg):
 	pass
 
 def hashearArchivo(FILE):
@@ -68,13 +81,11 @@ def main():
 			mensaje_json = json.loads(msg)
 			operacion = mensaje_json['operacion']
 			if(operacion=='upload'):
-				print(mensaje_json['lista'])
-				#upload(mensaje_json['lista'],identity)
+				#print(mensaje_json['lista'])
+				upload(mensaje_json['lista'],identity)
 			elif(operacion=='download'):
 				download(mensaje_json['arreglo'],identity)
 
-
-			print(msg)
 		elif sys.stdin.fileno() in socks:
 			print("?")
 			command = input()
