@@ -16,17 +16,22 @@ def get_Host_name_IP():
     except: 
         print("Unable to get Hostname and IP") 
 
-def upload(msg):
+def upload(msg,data):
     print(msg['name'])
     with open(msg['name'], 'wb') as f:
-        f.write(msg['data'].encode('utf8'))
+        f.write(data)
 
 def download(msg):
-    pass
+    dicc = {}
+    print(msg['name'])
+    with open(msg['name'],'rb') as f:
+        data = f.read()
+    dicc = {'nombre':msg['name'],'data':data}    
+    return dicc
 
 def main():
     servidortcp = "tcp://localhost:4444"
-    number  = random.randrange(0,9999)
+    number  = random.randrange(4445,9999)
     nombrework = 'tcp://'+get_Host_name_IP() + ':'+str(number)
     identity = nombrework.encode('utf8')
 
@@ -52,14 +57,18 @@ def main():
     print("Started server Archivos")
 
     while True:
-        sender, destino , msg = socketS.recv_multipart()
+        sender, destino , msg, data = socketS.recv_multipart()
         mensaje_json = json.loads(msg)
         operacion = mensaje_json['operacion']
         print(operacion)
         if (operacion=='upload'):
-            upload(mensaje_json)
+            upload(mensaje_json,data)
             pass
         elif(operacion=='download'):
+            m = download(mensaje_json)
+            mensaje = {'operacion':'download','archivo':{'nombre':m['nombre']}}
+            msg=json.dumps(mensaje)
+            socketS.send_multipart([destino, sender, msg.encode('utf8'),m['data']])
             pass            
         else:
             socketS.send_multipart([destino, sender, msg])
