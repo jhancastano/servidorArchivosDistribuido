@@ -29,10 +29,12 @@ def uploadCliente(diccionario,lista):
 	return dicc
 
 def downloadCliente(msg,Diccionario):
-	dicc = Diccionario[msg['name']]
-	print(msg['name'])
-	return dicc
-
+	if msg['name']in Diccionario:
+		dicc = Diccionario[msg['name']]
+		print(msg['name'])
+		return dicc
+	else:
+		return -1
 
 
 def main():
@@ -62,9 +64,16 @@ def main():
 			socket.send_multipart([destino, sender, msg.encode('utf8')])
 			
 		elif(operacion=='download'):
-			mensaje_json=downloadCliente(mensaje_json,diccArchivos)
-			mensaje = {'operacion':'download','name':mensaje_json}
-			msg=json.dumps(mensaje)
+			if (downloadCliente(mensaje_json,diccArchivos)!=-1):
+				msg=downloadCliente(mensaje_json,diccArchivos)
+				mensaje = {'operacion':'download','nombreHash':mensaje_json['name'],'name':msg}
+				msg=json.dumps(mensaje)
+				socket.send_multipart([destino, sender, msg.encode('utf8')])
+			else:
+				print('no existe archivo')
+		elif(operacion=='listar'):
+			mensaje = {'operacion':'listar','list':diccArchivos}
+			msg = json.dumps(mensaje)
 			socket.send_multipart([destino, sender, msg.encode('utf8')])
 			#print(diccArchivos)			
 		else:
