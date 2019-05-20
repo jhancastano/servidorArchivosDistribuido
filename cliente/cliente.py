@@ -147,7 +147,7 @@ def main():
 					print('no existe archivo')
 					pass
 			elif(op=='d'):
-				mensaje = {'operacion':'download','name':'aae5ae766cd09d09ff4fc98cc118d4a8c7bda4ff'}
+				mensaje = {'operacion':'download','name':msg}
 				mensaje_json = json.dumps(mensaje)
 			elif(op=='l'):
 				mensaje = {'operacion':'listar'}
