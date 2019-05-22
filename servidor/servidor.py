@@ -30,9 +30,16 @@ def download(msg):
     return dicc
 
 def main():
-    servidortcp = "tcp://localhost:4444"
+    
+    print('ingrese direccion IP del servidor proxy')
+    direccionProxy = input()
+
+    servidortcp = "tcp://"+direccionProxy+":4444"
     number  = random.randrange(4445,9999)
-    nombrework = 'tcp://'+get_Host_name_IP() + ':'+str(number)
+
+    print('ingrese direccion IP del servidor local')
+    direccion = input()
+    nombrework = 'tcp://'+ direccion + ':'+str(number)
     identity = nombrework.encode('utf8')
 
     context = zmq.Context()
