@@ -10,7 +10,8 @@ import time
 import os.path
 
 def joinFiles(msg,nombre):
-	with open(nombre+'.png','wb') as file:
+
+	with open(nombre+'.','wb') as file:
 		for x in msg['name']:
 			name = msg['name'][x]['namePart']
 			with open(name, 'rb') as f:
@@ -36,7 +37,7 @@ def upload(msg,identity):
 		mensaje = {'operacion':op,'name':msg[name][x]['namePart']}
 		mensaje_json = json.dumps(mensaje)
 		socket.send_multipart([identity,mensaje_json.encode('utf8'),data])
-		time.sleep(1)
+		time.sleep(.5)
 		os.remove(msg[name][x]['namePart'])
 	
 
@@ -55,7 +56,7 @@ def download(msg,identity):
 		socket.send_multipart([identity,mensaje_json.encode('utf8'),b'datos'])
 
 		sender, mensaje,data = socket.recv_multipart()
-		time.sleep(1)
+		time.sleep(.5)
 		mensaje_json = json.loads(mensaje)
 		#operacion = mensaje_json['operacion']
 		#print(mensaje_json['archivo']['nombre'])
@@ -109,7 +110,9 @@ def comprobarHash(diccionarioArchivo):
 def main():
 	dicc = {}
 	identity = b'1'
-	servidortcp = "tcp://localhost:4444"
+	print('ingrese ip servidor proxy:')
+	proxyServer = input()
+	servidortcp = "tcp://"+proxyServer+":4444"
 	context = zmq.Context()
 	socket = context.socket(zmq.DEALER)
 	socket.identity = identity
